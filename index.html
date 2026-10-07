@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Feliz Cumpleaños, Valentina!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 50%, #f3e5f5 100%);
+      font-family: 'Quicksand', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Fondo animado de corazones cayendo continuamente */
+    #hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .falling-element {
+      position: absolute;
+      top: -60px;
+      user-select: none;
+      pointer-events: none;
+      animation: fall linear infinite;
+      filter: drop-shadow(0 2px 4px rgba(233, 30, 99, 0.2));
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0.9;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg) scale(1.2);
+        opacity: 0.1;
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      padding: 30px 20px;
+      border-radius: 30px;
+      box-shadow: 0 15px 35px rgba(233, 30, 99, 0.25);
+      max-width: 92%;
+      width: 360px;
+      border: 2px solid #f8bbd0;
+      display: none;
+      z-index: 10;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      margin: 20px 0;
+      position: relative;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .card.active { display: block; }
+
+    .icon-header {
+      font-size: 55px;
+      margin-bottom: 5px;
+      animation: pulse 2s infinite alternate;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      color: #d81b60;
+      font-size: 34px;
+      margin: 5px 0 10px 0;
+    }
+
+    p {
+      color: #4a148c;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .gift-box-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0;
+    }
+
+    .gift-box {
+      font-size: 36px;
+      cursor: pointer;
+      background: #fff0f5;
+      padding: 10px;
+      border-radius: 20px;
+      border: 2px dashed #f48fb1;
+      transition: transform 0.2s;
+    }
+
+    .gift-box:active { transform: scale(0.9); }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      gap: 8px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #f48fb1, #ec407a);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+      flex: 1;
+    }
+
+    button:active { transform: scale(0.95); }
+
+    .btn-surprise {
+      background: linear-gradient(135deg, #e91e63, #d81b60);
+      color: #ffffff;
+      font-size: 15px;
+      padding: 12px 18px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: 25px 20px;
+      border-radius: 30px;
+      text-align: center;
+      max-width: 310px;
+      border: 3px solid #f48fb1;
+      animation: popIn 0.3s ease;
+    }
+
+    .badge {
+      background: #f8bbd0;
+      color: #880e4f;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .page-indicator {
+      font-size: 11px;
+      color: #ad1457;
+      font-weight: 700;
+      margin-top: 6px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contenedor del fondo con corazones cayendo -->
+  <div id="hearts-container"></div>
+
+  <!-- Página 1 -->
+  <div class="card active" id="page1">
+    <span class="badge">💖 Página 1 de 10 💖</span>
+    <div class="icon-header">👑💖🎂</div>
+    <h1>¡Feliz Cumpleaños, Valentina!</h1>
+    <p>Llegó el día tan esperado. Prepárate para hacer un recorrido por 10 páginas llenas de amor y detalles hechos especialmente para vos.</p>
+    <div class="btn-container">
+      <button onclick="nextPage(2)" style="margin-left: auto;">Empezar 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 1 / 10</span>
+  </div>
+
+  <!-- Página 2 -->
+  <div class="card" id="page2">
+    <span class="badge">🎁 Página 2 de 10 🎁</span>
+    <div class="icon-header">🎁✨💕</div>
+    <h1>Regalos Interactivos</h1>
+    <p>Tocá cada uno de los regalos para abrir un deseo especial que tengo para tu vida:</p>
+    <div class="gift-box-container">
+      <div class="gift-box" onclick="openWish('💖 Amor Infinito', 'Gracias por hacerme el novio más feliz del mundo y por llenar cada uno de mis días de alegría.')">🎁</div>
+      <div class="gift-box" onclick="openWish('🌟 Mis Mejores Deseos', 'Que esta nueva vuelta al sol te traiga miles de momentos hermosos, metas cumplidas y sonrisas.')">🎁</div>
+      <div class="gift-box" onclick="openWish('🌹 Siempre Juntos', 'Quiero seguir caminando a tu lado, cuidándote y compartiendo momentos mágicos.')">🎁</div>
+    </div>
+    <div class="btn-container">
+      <button onclick="nextPage(1)">⬅ Anterior</button>
+      <button onclick="nextPage(3)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 2 / 10</span>
+  </div>
+
+  <!-- Página 3 -->
+  <div class="card" id="page3">
+    <span class="badge">🌸 Página 3 de 10 🌸</span>
+    <div class="icon-header">✨💖🌷</div>
+    <h1>Lo que más amo de vos</h1>
+    <p>Amo tu sonrisa contagiosa, la luz que transmitís cuando entrás a un lugar y la forma en la que cuidás a las personas que querés. Sos una persona única.</p>
+    <div class="btn-container">
+      <button onclick="nextPage(2)">⬅ Anterior</button>
+      <button onclick="nextPage(4)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 3 / 10</span>
+  </div>
+
+  <!-- Página 4 -->
+  <div class="card" id="page4">
+    <span class="badge">📸 Página 4 de 10 📸</span>
+    <div class="icon-header">📸✨🥂</div>
+    <h1>Nuestros Recuerdos</h1>
+    <p>Cada risa compartida, cada charla hasta tarde y cada momento a tu lado se convirtió en mi recuerdo favorito. ¡Qué lindo es construir esta historia con vos!</p>
+    <div class="btn-container">
+      <button onclick="nextPage(3)">⬅ Anterior</button>
+      <button onclick="nextPage(5)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 4 / 10</span>
+  </div>
+
+  <!-- Página 5 -->
+  <div class="card" id="page5">
+    <span class="badge">🍰 Página 5 de 10 🍰</span>
+    <div class="icon-header">🍰🎉👑</div>
+    <h1>Deseos de Cumpleaños</h1>
+    <p>Que en este nuevo año de vida nunca te falte la salud, la tranquilidad, la paz en tu corazón y muchos motivos para festejar bien fuerte.</p>
+    <div class="btn-container">
+      <button onclick="nextPage(4)">⬅ Anterior</button>
+      <button onclick="nextPage(6)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 5 / 10</span>
+  </div>
+
+  <!-- Página 6 -->
+  <div class="card" id="page6">
+    <span class="badge">💍 Página 6 de 10 💍</span>
+    <div class="icon-header">🤝💖✨</div>
+    <h1>Mis Promesas Para Vos</h1>
+    <p>Me comprometo a sacarte una sonrisa incluso en los días difíciles, a apoyarte en cada sueño que tengas y a ser tu fan número uno en todo.</p>
+    <div class="btn-container">
+      <button onclick="nextPage(5)">⬅ Anterior</button>
+      <button onclick="nextPage(7)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 6 / 10</span>
+  </div>
+
+  <!-- Página 7 -->
+  <div class="card" id="page7">
+    <span class="badge">⭐ Página 7 de 10 ⭐</span>
+    <div class="icon-header">🌟🥂🥳</div>
+    <h1>Razones para Festejar</h1>
+    <p>Hoy el mundo es un lugar mejor porque un día como hoy naciste vos. Que comas mucho pastel, recibas muchos mimos y te sientas la reina que sos.</p>
+    <div class="btn-container">
+      <button onclick="nextPage(6)">⬅ Anterior</button>
+      <button onclick="nextPage(8)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 7 / 10</span>
+  </div>
+
+  <!-- Página 8 -->
+  <div class="card" id="page8">
+    <span class="badge">✈️ Página 8 de 10 ✈️</span>
+    <div class="icon-header">🗺️🍕💋</div>
+    <h1>Lo que se viene</h1>
+    <p>Se vienen más viajes, más citas románticas, más comidas ricas y muchísimos momentos nuevos para guardar en nuestro álbum del corazón.</p>
+    <div class="btn-container">
+      <button onclick="nextPage(7)">⬅ Anterior</button>
+      <button onclick="nextPage(9)">Siguiente 💕 ➔</button>
+    </div>
+    <span class="page-indicator">Página 8 / 10</span>
+  </div>
+
+  <!-- Página 9 -->
+  <div class="card" id="page9">
+    <span class="badge">💌 Página 9 de 10 💌</span>
+    <div class="icon-header">💌💐💖</div>
+    <h1>Carta de Amor</h1>
+    <p>Valentina, nunca dejes de brillar ni de mantener esa frescura y autenticidad que te hacen tan maravillosa. Te merecés el universo entero.</p>
+    <p style="font-family: 'Dancing Script', cursive; font-size: 26px; color: #c2185b;">¡Sos el amor de mi vida! 💋✨</p>
+    <div class="btn-container">
+      <button onclick="nextPage(8)">⬅ Anterior</button>
+      <button onclick="nextPage(10)">Ir al Final 🎉 ➔</button>
+    </div>
+    <span class="page-indicator">Página 9 / 10</span>
+  </div>
+
+  <!-- Página 10 -->
+  <div class="card" id="page10">
+    <span class="badge">🎆 Página 10 de 10 🎆</span>
+    <div class="icon-header">🥳👑💖</div>
+    <h1>¡Gran Gran Final!</h1>
+    <p>Llegaste al final del recorrido. Tocá el botón de abajo para activar tu gran sorpresa de cumpleaños:</p>
+    <button class="btn-surprise" onclick="showSurprise()">¡Tocá acá para tu sorpresa final! 💋🎆💖</button>
+    <div class="btn-container">
+      <button onclick="nextPage(9)">⬅ Anterior</button>
+    </div>
+    <span class="page-indicator">Página 10 / 10</span>
+  </div>
+
+  <!-- Modal Sorpresa Final -->
+  <div class="modal" id="surpriseModal">
+    <div class="modal-content">
+      <div style="font-size: 55px; margin-bottom: 10px;">🥰💋🎂</div>
+      <h2 style="font-family: 'Dancing Script', cursive; color: #d81b60; font-size: 32px; margin: 0 0 10px 0;">¡Muy Feliz Cumple, Valen!</h2>
+      <p style="color: #4a148c; font-size: 15px; font-weight: 600;">¡Un beso gigante para la novia más linda del mundo! Te amo con todo mi corazón.</p>
+      <button onclick="closeSurprise()" style="margin-top: 15px;">Cerrar 💖</button>
+    </div>
+  </div>
+
+  <!-- Modal Deseos -->
+  <div class="modal" id="wishModal">
+    <div class="modal-content">
+      <h3 id="wishTitle" style="color: #d81b60; font-family: 'Dancing Script', cursive; font-size: 28px; margin: 0 0 10px 0;"></h3>
+      <p id="wishText" style="color: #4a148c; font-size: 15px; font-weight: 600;"></p>
+      <button onclick="closeWish()" style="margin-top: 10px;">Cerrar 💕</button>
+    </div>
+  </div>
+
+  <script>
+    function nextPage(n){
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      document.getElementById('page' + n).classList.add('active');
+    }
+
+    function showSurprise(){
+      document.getElementById('surpriseModal').style.display = 'flex';
+      for(let i=0; i<40; i++){
+        setTimeout(createFallingElement, i * 60);
+      }
+    }
+
+    function closeSurprise(){
+      document.getElementById('surpriseModal').style.display = 'none';
+    }
+
+    function openWish(title, text){
+      document.getElementById('wishTitle').innerText = title;
+      document.getElementById('wishText').innerText = text;
+      document.getElementById('wishModal').style.display = 'flex';
+    }
+
+    function closeWish(){
+      document.getElementById('wishModal').style.display = 'none';
+    }
+
+    // Función para crear la lluvia constante en el fondo
+    function createFallingElement(){
+      const container = document.getElementById('hearts-container');
+      const el = document.createElement('div');
+      el.classList.add('falling-element');
+      
+      const icons = ['💖','💕','💗','🌸','✨','🎂','🌹','💋','🌷','👑','🎁'];
+      el.innerText = icons[Math.floor(Math.random() * icons.length)];
+      
+      el.style.left = Math.random() * 100 + 'vw';
+      const duration = Math.random() * 3 + 3; // Caída fluida entre 3s y 6s
+      el.style.animationDuration = duration + 's';
+      el.style.fontSize = (Math.random() * 16 + 18) + 'px';
+      
+      container.appendChild(el);
+      
+      setTimeout(() => {
+        el.remove();
+      }, duration * 1000);
+    }
+
+    // Generar corazones flotantes continuamente cada 150ms
+    setInterval(createFallingElement, 150);
+  </script>
+</body>
+</html>
